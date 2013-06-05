@@ -1,0 +1,64 @@
+#
+# Cookbook Name:: kafka
+# Recipe:: default
+#
+# Copyright 2011, Heavy Water Ops, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+include_recipe "java"
+include_recipe "typesafe-stack"
+include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
+
+node.default[:kafka][:download_url] = File.join(
+  node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}",
+  "kafka-#{node[:kafka][:version]}-incubating-src.tgz"
+)
+
+tarball = File.basename(node[:kafka][:download_url])
+kafka_path = tarball.sub(File.extname(tarball), '')
+base_dir = File.join(node[:kafka][:install_dir], File.basename(kafka_path))
+
+builder_remote tarball do
+  remote_file node[:kafka][:download_url]
+  suffix_cwd kafka_path
+  commands [
+    "sbt update",
+    "sbt package",
+    "sbt assembly-package-dependency",
+    "mv #{kafka_path} #{node[:kafka][:install_dir]}"
+  ]
+  creates File.join(base_dir, "bin/kafka-server-start.sh")
+end
+
+link "#{node[:kafka][:install_dir]}/kafka" do
+  to base_dir
+end
+
+runit_service "kafka"
+
+node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
+node.default[:kafka][:config]["brokerid"] =
+  %x{hostid}.to_i(16) unless node[:kafka][:config]["brokerid"]
+
+template '/etc/kafka/conf/kafka.properties' do
+  source 'kafka.properties.erb'
+  mode 0644
+  notifies :restart, 'service[kafka]'
+end
+
+service "kafka" do
+  action :enable
+  subscribes :restart, resources("template[/etc/kafka/conf/kafka.properties]"), :immediately
+end
