@@ -11,5 +11,4 @@ depends "java",  "~> 1.11.4"
 depends "runit", "~> 1.1.4"
 depends "builder", "~> 0.1.1"
 depends "zookeeperd", "~> 0.1.0"
-depends "typesafe-stack", "~> 0.1.0"
 

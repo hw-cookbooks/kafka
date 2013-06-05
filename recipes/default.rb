@@ -18,7 +18,6 @@
 #
 
 include_recipe "java"
-include_recipe "typesafe-stack"
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
 node.default[:kafka][:download_url] = File.join(
@@ -30,24 +29,13 @@ tarball = File.basename(node[:kafka][:download_url])
 kafka_path = tarball.sub(File.extname(tarball), '')
 base_dir = File.join(node[:kafka][:install_dir], File.basename(kafka_path))
 
-file "/etc/sbt/sbtopts" do
-  content node[:kafka][:sbt][:config].map do |k,v|
-    "-#{k.to_s.gsub('_', '')} #{v}"
-  end.join("\n")
-  mode 0644
-end
-
-execute "sbt -batch" do
-  not_if { ::Dir.exists?(node[:kafka][:sbt][:config][:sbt_dir]) }
-end
-
-builder_remote tarball do
+builder_remote "kafka-#{node[:kafka][:version]}" do
   remote_file node[:kafka][:download_url]
   suffix_cwd kafka_path
   commands [
-    "sbt update",
-    "sbt package",
-    "sbt assembly-package-dependency",
+    "./sbt update",
+    "./sbt package",
+    "./sbt assembly-package-dependency",
     "mv #{kafka_path} #{node[:kafka][:install_dir]}"
   ]
   creates File.join(base_dir, "bin/kafka-server-start.sh")
