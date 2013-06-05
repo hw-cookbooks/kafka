@@ -26,8 +26,8 @@ node.default[:kafka][:download_url] = File.join(
 )
 
 tarball = File.basename(node[:kafka][:download_url])
-kafka_path = tarball.sub(File.extname(tarball), '')
-base_dir = File.join(node[:kafka][:install_dir], File.basename(kafka_path))
+version_dir = "kafka-#{node[:kafka][:version]}"
+base_dir = File.join(node[:kafka][:install_dir], version_dir)
 
 group node[:kafka][:group]
 
@@ -39,17 +39,17 @@ user node[:kafka][:user] do
   system true
 end
 
-directory node[:kafka][:install_dir] do
+directory base_dir do
   recursive true
 end
 
-builder_remote "kafka-#{node[:kafka][:version]}" do
+builder_remote version_dir do
   remote_file node[:kafka][:download_url]
-  suffix_cwd kafka_path
+  suffix_cwd tarball.sub(File.extname(tarball), '')
   commands [
     "./sbt update",
     "./sbt package",
-    "mv #{kafka_path} #{node[:kafka][:install_dir]}"
+    "cp -R . #{base_dir}"
   ]
   creates File.join(base_dir, "bin/kafka-server-start.sh")
 end
