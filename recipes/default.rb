@@ -35,7 +35,6 @@ builder_remote "kafka-#{node[:kafka][:version]}" do
   commands [
     "./sbt update",
     "./sbt package",
-    "./sbt assembly-package-dependency",
     "mv #{kafka_path} #{node[:kafka][:install_dir]}"
   ]
   creates File.join(base_dir, "bin/kafka-server-start.sh")
