@@ -30,6 +30,17 @@ tarball = File.basename(node[:kafka][:download_url])
 kafka_path = tarball.sub(File.extname(tarball), '')
 base_dir = File.join(node[:kafka][:install_dir], File.basename(kafka_path))
 
+file "/etc/sbt/sbtopts" do
+  content node[:kafka][:sbt][:config].map do |k,v|
+    "-#{k.to_s.gsub('_', '')} #{v}"
+  end.join("\n")
+  mode 0644
+end
+
+execute "sbt -batch" do
+  not_if { ::Dir.exists?(node[:kafka][:sbt][:config][:sbt_dir]) }
+end
+
 builder_remote tarball do
   remote_file node[:kafka][:download_url]
   suffix_cwd kafka_path
