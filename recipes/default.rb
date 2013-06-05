@@ -29,6 +29,20 @@ tarball = File.basename(node[:kafka][:download_url])
 kafka_path = tarball.sub(File.extname(tarball), '')
 base_dir = File.join(node[:kafka][:install_dir], File.basename(kafka_path))
 
+group node[:kafka][:group]
+
+user node[:kafka][:user] do
+  comment "Kafka user"
+  gid node[:kafka][:group]
+  home "#{node[:kafka][:install_dir]}/kafka"
+  shell "/bin/noshell"
+  system true
+end
+
+directory node[:kafka][:install_dir] do
+  recursive true
+end
+
 builder_remote "kafka-#{node[:kafka][:version]}" do
   remote_file node[:kafka][:download_url]
   suffix_cwd kafka_path
