@@ -63,7 +63,9 @@ link "#{node[:kafka][:install_dir]}/kafka" do
   to base_dir
 end
 
-runit_service "kafka"
+runit_service "kafka" do
+  action :enable
+end
 
 node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
 node.default[:kafka][:config]["brokerid"] =
@@ -76,6 +78,6 @@ template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
 end
 
 service "kafka" do
-  action :enable
-  subscribes :restart, resources("template[{#{conf_file}]"), :immediately
+  action :nothing
+  subscribes :restart, resources("template[#{conf_file}]"), :immediately
 end
