@@ -1,0 +1,36 @@
+{
+  :nodes => {
+    :kafka => {
+      :template => 'ubuntu_1204_2G',
+      :run_list => %w(recipe[kafka])
+    },
+    :zk1 => {
+      :template => 'ubuntu_1204_2G',
+      :run_list => %w(recipe[zookeeperd::server])
+    },
+    :zk2 => {
+      :template => 'ubuntu_1204_2G',
+      :run_list => %w(recipe[zookeeperd::server])
+    },
+    :zk3 => {
+      :template => 'ubuntu_1204_2G',
+      :run_list => %w(recipe[zookeeperd::server])
+    }
+  },
+  :clusters => {
+    :kafka => %w(zk1 zk2 zk3 kafka)
+  },
+  :templates => {
+    :ubuntu_1204_2G => {
+      :base => 'ubuntu_1204',
+      :memory => {
+        :ram => '2G',
+        :swap => '1G'
+      }
+    }
+  },
+  :sudo => 'rvmsudo',
+  :local_chef_server => {
+    :enabled => true
+  }
+}
