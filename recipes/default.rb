@@ -22,7 +22,7 @@ include_recipe "typesafe-stack"
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
 node.default[:kafka][:download_url] = File.join(
-  node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}",
+  node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-incubating",
   "kafka-#{node[:kafka][:version]}-incubating-src.tgz"
 )
 
