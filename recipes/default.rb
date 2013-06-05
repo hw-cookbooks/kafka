@@ -44,6 +44,10 @@ directory base_dir do
   recursive true
 end
 
+directory node[:kafka][:conf_dir] do
+  recursive true
+end
+
 builder_remote version_dir do
   remote_file node[:kafka][:download_url]
   suffix_cwd tarball.sub(File.extname(tarball), '')
@@ -65,7 +69,7 @@ node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
 node.default[:kafka][:config]["brokerid"] =
   %x{hostid}.to_i(16) unless node[:kafka][:config]["brokerid"]
 
-template '/etc/kafka/conf/kafka.properties' do
+template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   source 'kafka.properties.erb'
   mode 0644
   notifies :restart, 'service[kafka]'
@@ -73,5 +77,5 @@ end
 
 service "kafka" do
   action :enable
-  subscribes :restart, resources("template[/etc/kafka/conf/kafka.properties]"), :immediately
+  subscribes :restart, resources("template[{#{conf_file}]"), :immediately
 end
