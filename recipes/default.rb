@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+include_recipe "runit"
 include_recipe "java"
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
