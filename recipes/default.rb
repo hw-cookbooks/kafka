@@ -48,6 +48,12 @@ directory node[:kafka][:conf_dir] do
   recursive true
 end
 
+directory node[:kafka][:log_dir] do
+  recursive true
+  user node[:kafka][:user]
+  group node[:kafka][:group]
+end
+
 builder_remote version_dir do
   remote_file node[:kafka][:download_url]
   suffix_cwd tarball.sub(File.extname(tarball), '')
@@ -64,6 +70,7 @@ link "#{node[:kafka][:install_dir]}/kafka" do
 end
 
 runit_service "kafka" do
+  finish true
   action :enable
 end
 
