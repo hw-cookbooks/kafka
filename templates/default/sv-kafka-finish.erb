@@ -1,0 +1,3 @@
+#!/bin/sh
+exec 2>&1
+exec <%= node[:kafka][:install_dir] %>/kafka/bin/kafka-server-stop.sh
