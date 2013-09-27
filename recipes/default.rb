@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
-include_recipe "java"
-include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
+include_recipe 'runit'
+include_recipe 'java'
+include_recipe 'kafka::discovery' if node[:kafka][:auto_discovery]
 
 node.default[:kafka][:download_url] = File.join(
   node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-incubating",
@@ -33,10 +33,10 @@ base_dir = File.join(node[:kafka][:install_dir], version_dir)
 group node[:kafka][:group]
 
 user node[:kafka][:user] do
-  comment "Kafka user"
+  comment 'Kafka user'
   gid node[:kafka][:group]
   home "#{node[:kafka][:install_dir]}/kafka"
-  shell "/bin/noshell"
+  shell '/bin/false'
   system true
 end
 
@@ -71,12 +71,20 @@ end
 
 runit_service "kafka" do
   finish true
-  action :enable
 end
 
-node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
-node.default[:kafka][:config]["brokerid"] =
-  %x{hostid}.to_i(16) unless node[:kafka][:config]["brokerid"]
+node.default[:kafka][:config]['log.dir'] = node[:kafka][:log_dir]
+
+unless(node[:kafka][:config][:brokerid])
+  factor = node[:kafka][:int_bit_limit]/8
+  max_uint = 2**(%w(a).pack('p').size * factor) - 1
+  if(node[:kafka][:auto_id].to_s != 'rand')
+    node.set[:kafka][:config][:brokerid] = %x{hostid}.to_i(16)
+  end
+  if(node[:kafka][:config][:brokerid].nil? || node[:kafka][:config][:brokerid] > max_uint)
+    node.set[:kafka][:config][:brokerid] = rand(max_uint)
+  end
+end
 
 template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   source 'kafka.properties.erb'
@@ -84,7 +92,7 @@ template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   notifies :restart, 'service[kafka]'
 end
 
-service "kafka" do
+service 'kafka' do
   action :nothing
   subscribes :restart, resources("template[#{conf_file}]"), :immediately
 end
