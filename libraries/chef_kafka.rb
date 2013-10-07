@@ -9,20 +9,23 @@ module ChefKafka
     #   less than 0.7.x
     def kafka_is_below_07?
       bits = node[:kafka][:version].split('.')
-      Chef::Log.warn("#kafka_is_below_07? gives: #{bits.inspect}")
       bits[0].to_i == 0 && bits[1].to_i <= 7
     end
 
+    # Returns the correct ZooKeeper prefix key name based on the desired
+    # version of Kafka.
+    #
+    # @return [String] the correct ZooKeeper prefix name
     def kafka_zk_prefix
-      r = kafka_is_below_07? ? "zk" : "zookeeper"
-      Chef::Log.warn("#kafka_zk_prefix gives: #{r.inspect}")
-      r
+      kafka_is_below_07? ? "zk" : "zookeeper"
     end
 
+    # Returns the correct broker key name based on the desired version of
+    # Kafka.
+    #
+    # @return [String] the correct broker key name
     def kafka_broker_key
-      r = kafka_is_below_07? ? "brokerid" : "broker.id"
-      Chef::Log.warn("#kafka_broker_key gives: #{r.inspect}")
-      r
+      kafka_is_below_07? ? "brokerid" : "broker.id"
     end
 
     # Calculates a new broker id that won't overflow a Java Integer.
