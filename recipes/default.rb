@@ -17,18 +17,35 @@
 # limitations under the License.
 #
 
-include_recipe 'runit'
-include_recipe 'java'
-include_recipe 'kafka::discovery' if node[:kafka][:auto_discovery]
+::Chef::Recipe.send(:include, ChefKafka::Helpers)
 
-node.default[:kafka][:download_url] = File.join(
-  node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-incubating",
-  "kafka-#{node[:kafka][:version]}-incubating-src.tgz"
-)
+node.default[:kafka][:config]["#{kafka_zk_prefix}.connectiontimeout.ms"] = 1000000
+
+include_recipe "runit"
+include_recipe "java"
+include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
+
+if kafka_is_below_07?
+  node.default[:kafka][:base_url] = "https://www.apache.org/dist/incubator/kafka/"
+  node.default[:kafka][:download_url] = File.join(
+    node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-incubating",
+    "kafka-#{node[:kafka][:version]}-incubating-src.tgz"
+  )
+else
+  node.default[:kafka][:base_url] = "https://www.apache.org/dist/kafka/"
+  node.default[:kafka][:download_url] = File.join(
+    node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-src.tgz"
+  )
+end
 
 tarball = File.basename(node[:kafka][:download_url])
 version_dir = "kafka-#{node[:kafka][:version]}"
 base_dir = File.join(node[:kafka][:install_dir], version_dir)
+
+build_commands = ["./sbt update", "./sbt package"]
+build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
+build_commands << "cp -R . #{base_dir}"
+node.default[:kafka][:build_commands] = build_commands
 
 group node[:kafka][:group]
 
@@ -57,11 +74,7 @@ end
 builder_remote version_dir do
   remote_file node[:kafka][:download_url]
   suffix_cwd tarball.sub(File.extname(tarball), '')
-  commands [
-    "./sbt update",
-    "./sbt package",
-    "cp -R . #{base_dir}"
-  ]
+  commands node[:kafka][:build_commands]
   creates File.join(base_dir, "bin/kafka-server-start.sh")
 end
 
@@ -73,17 +86,10 @@ runit_service "kafka" do
   finish true
 end
 
-node.default[:kafka][:config]['log.dir'] = node[:kafka][:log_dir]
+node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
 
-unless(node[:kafka][:config][:brokerid])
-  factor = node[:kafka][:int_bit_limit]/8
-  max_uint = 2**(%w(a).pack('p').size * factor) - 1
-  if(node[:kafka][:auto_id].to_s != 'rand')
-    node.set[:kafka][:config][:brokerid] = %x{hostid}.to_i(16)
-  end
-  if(node[:kafka][:config][:brokerid].nil? || node[:kafka][:config][:brokerid] > max_uint)
-    node.set[:kafka][:config][:brokerid] = rand(max_uint)
-  end
+if node[:kafka][:config][kafka_broker_key].nil?
+  node.default[:kafka][:config][kafka_broker_key] = new_kafka_broker_id
 end
 
 template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
