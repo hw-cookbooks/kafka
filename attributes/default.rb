@@ -8,4 +8,5 @@ default[:kafka][:log_dir] = "/var/log/kafka"
 default[:kafka][:user] = "kafka"
 default[:kafka][:group] = "kafka"
 
+default[:kafka][:int_bit_limit] = 32
 default[:kafka][:auto_discovery] = true
