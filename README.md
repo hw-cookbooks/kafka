@@ -19,7 +19,7 @@ for the brokers to connect to.
 
 ### <a name="requirements-chef"></a> Chef
 
-Tested on 11.6.0 but newer and older versions (of 11) should work just fine.
+Tested on 11.10.0 but newer and older versions (of 11) should work just fine.
 File an [issue][issues] if this isn't the case.
 
 ### <a name="requirements-platform"></a> Platform
@@ -54,7 +54,6 @@ This recipe discovers other ZooKeeper cluster instances and augments the
 ## <a name="attributes"></a> Attributes
 
 * `node[:kafka][:auto_discovery]` - whether or not to perform auto discovery via the discovery recipe (defaults to `true`)
-* `node[:kafka][:base_url]` - base URL for downloading the distribution (defaults depends on version of Kafka, see [attributes::default](https://github.com/hw-cookbooks/kafka/blob/master/attributes/default.rb))
 * `node[:kafka][:build_commands]` - commands to compile Kafka (defaults depends on version of Kafka, see [attributes::default](https://github.com/hw-cookbooks/kafka/blob/master/attributes/default.rb))
 * `node[:kafka][:conf_dir]` - configuration directory (defaults to `"/etc/kafka/conf"`)
 * `node[:kafka][:config]` - Kafka configuration has which will be rendered into *kafka.properties* (defaults depends on version of Kafka, see [attributes::config](https://github.com/hw-cookbooks/kafka/blob/master/attributes/config.rb))
@@ -83,7 +82,7 @@ Ideally create a topic branch for every separate change you make.
 
 Author:: [Heavy Water Operations][hw]
 
-Copyright 2011, Heavy Water Operations, LLC
+Copyright 2011, 2012, 2013, 2014 Heavy Water Operations, LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
