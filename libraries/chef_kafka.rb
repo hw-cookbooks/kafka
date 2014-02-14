@@ -2,6 +2,36 @@ module ChefKafka
 
   module Helpers
 
+    def kafka_download_url(version)
+      uri = nil
+
+      if kafka_is_below_07?
+        uri = URI.parse("http://archive.apache.org")
+        uri.path = %W{
+          /dist/kafka/old_releases
+          kafka-#{version}-incubating
+          kafka-#{version}-incubating-src.tgz
+        }.join("/")
+      else
+        uri = URI.parse("https://www.apache.org")
+        uri.path = %W{
+          /dist/kafka
+          #{version}
+          kafka-#{version}-src.tgz
+        }.join("/")
+      end
+
+      uri.to_s
+    end
+
+    def kafka_file(uri)
+      Pathname.new(URI.parse(uri).path).basename.to_s
+    end
+
+    def kafka_suffix_cwd(uri)
+      kafka_file(uri).sub(File.extname(kafka_file(uri)), '')
+    end
+
     # Determines whether or not the desired version is equal or less then a
     # 0.7.x release.
     #

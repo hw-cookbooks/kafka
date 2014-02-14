@@ -9,12 +9,25 @@ provisioner:
 
 platforms:
   - name: ubuntu-12.04
+    run_list:
+      - recipe[apt]
+      - recipe[zookeeperd::server]
+      - recipe[kafka]
+    attributes:
+      zookeeperd:
+        cluster:
+          auto_discovery: false
 
 suites:
   - name: kafka-0.8
-    run_list:
-      - recipe[apt]
-      - recipe[kafka]
     attributes:
       kafka:
         version: 0.8.0
+        config:
+          zookeeper.connect: "127.0.0.1:2181"
+  - name: kafka-0.7
+    attributes:
+      kafka:
+        version: 0.7.2
+        config:
+          zk.connect: "127.0.0.1:2181"

@@ -25,20 +25,6 @@ include_recipe "runit"
 include_recipe "java"
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
-if kafka_is_below_07?
-  node.default[:kafka][:base_url] = "https://www.apache.org/dist/incubator/kafka/"
-  node.default[:kafka][:download_url] = File.join(
-    node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-incubating",
-    "kafka-#{node[:kafka][:version]}-incubating-src.tgz"
-  )
-else
-  node.default[:kafka][:base_url] = "https://www.apache.org/dist/kafka/"
-  node.default[:kafka][:download_url] = File.join(
-    node[:kafka][:base_url], "kafka-#{node[:kafka][:version]}-src.tgz"
-  )
-end
-
-tarball = File.basename(node[:kafka][:download_url])
 version_dir = "kafka-#{node[:kafka][:version]}"
 base_dir = File.join(node[:kafka][:install_dir], version_dir)
 
@@ -71,9 +57,11 @@ directory node[:kafka][:log_dir] do
   group node[:kafka][:group]
 end
 
+extracted_path = kafka_suffix_cwd(node[:kafka][:download_url])
+
 builder_remote version_dir do
   remote_file node[:kafka][:download_url]
-  suffix_cwd tarball.sub(File.extname(tarball), '')
+  suffix_cwd extracted_path
   commands node[:kafka][:build_commands]
   creates File.join(base_dir, "bin/kafka-server-start.sh")
 end
