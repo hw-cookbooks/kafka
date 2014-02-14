@@ -19,8 +19,10 @@
 
 include_recipe "zookeeperd::discovery"
 
+zk_prefix = node[:kafka][:zk_prefix]
+
 node.set[:kafka][:config]['enable.zookeeper'] = true
-node.set[:kafka][:config]["zk.connect"] = node[:zookeeperd][:config].map do |k,v|
+node.set[:kafka][:config]["#{zk_prefix}.connect"] = node[:zookeeperd][:config].map do |k,v|
   next unless k.start_with?("server.")
   [v.split(":").first, '2181'].join(':')
 end.compact.join(',')
