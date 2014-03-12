@@ -11,7 +11,14 @@ platforms:
   - name: ubuntu-12.04
     run_list:
       - recipe[apt]
-      - recipe[zookeeperd::server]
+      - recipe[kafka]
+    attributes:
+      zookeeperd:
+        cluster:
+          auto_discovery: false
+  - name: centos-6.4
+    run_list:
+      - recipe[yum]
       - recipe[kafka]
     attributes:
       zookeeperd:
