@@ -13,7 +13,7 @@ as a distributed commit log.
 
 Simply include `recipe[kafka]` in your run\_list and Kafka will be installed.
 Note that this presumes you already have ZooKeeper instance(s) up and running
-for the brokers to connect to.
+for the brokers to connect to. You have the option of including the `kafka::zookeeper` recipe in your node's run list before the kafka default recipe to get zookeeper up and running.
 
 ## <a name="requirements"></a> Requirements
 
