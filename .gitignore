@@ -8,3 +8,4 @@ Cheffile.lock
 .kitchen.local.yml
 .librarian
 tmp/
+cookbooks

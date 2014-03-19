@@ -16,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe "zookeeperd::server"
-
 ::Chef::Recipe.send(:include, ChefKafka::Helpers)
 
 node.default[:kafka][:config]["#{kafka_zk_prefix}.connectiontimeout.ms"] = 1000000
