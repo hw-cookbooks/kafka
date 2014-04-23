@@ -1,3 +1,4 @@
 #!/bin/sh
+cd <%= node[:kafka][:runtime_dir] %>
 exec 2>&1
 exec chpst -u <%= node[:kafka][:user] %> <%= node[:kafka][:install_dir]%>/kafka/bin/kafka-server-start.sh /etc/kafka/conf/kafka.properties

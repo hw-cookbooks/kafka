@@ -1,3 +1,6 @@
+# ensure node.kafka.version is loaded
+include_attribute "kafka::default"
+
 default[:kafka][:config] = Mash[
   'hostname', node[:fqdn],
   'port', 9092,
@@ -12,6 +15,5 @@ default[:kafka][:config] = Mash[
   'log.retention.hours', 168,
   'log.file.size', 536870912,
   'log.cleanup.interval.mins', 1,
-  'enable.zookeeper', false,
-  'zk.connectiontimeout.ms', 1000000
+  'enable.zookeeper', false
 ]
