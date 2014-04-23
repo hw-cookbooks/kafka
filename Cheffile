@@ -4,4 +4,4 @@ site "http://community.opscode.com/api/v1"
 
 cookbook "kafka", path: "."
 cookbook "apt"
-cookbook "zookeeperd", git: "https://github.com/aimtheory/zookeeperd.git", :ref => "redhat"
+cookbook "zookeeperd"
