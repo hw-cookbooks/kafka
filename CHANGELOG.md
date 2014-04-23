@@ -1,4 +1,4 @@
-## 0.2.0 / Unreleased
+## 0.2.0
 
 ### Breaking changes
 
@@ -8,4 +8,3 @@
 ### New features
 
 * Pull request #1: Add support for Kafka 0.8.x releases. (@fnichol, @webframp)
-
