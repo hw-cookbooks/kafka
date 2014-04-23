@@ -13,7 +13,7 @@ module ChefKafka
           kafka-#{version}-incubating-src.tgz
         }.join("/")
       else
-        uri = URI.parse("https://www.apache.org")
+        uri = URI.parse("https://archive.apache.org")
         uri.path = %W{
           /dist/kafka
           #{version}
