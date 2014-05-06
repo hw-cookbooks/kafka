@@ -1,3 +1,7 @@
+## 0.2.2
+
+* Update download URI
+
 ## 0.2.0
 
 ### Breaking changes
