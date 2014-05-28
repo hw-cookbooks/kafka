@@ -62,7 +62,8 @@ module ChefKafka
     #
     # @return [Integer] a new broker id
     def new_kafka_broker_id
-      max_java_integer = (2 ** 31) - 1
+      int_bit = kafka_is_below_07? ? 15 : 31
+      max_java_integer = (2 ** int_bit) - 1
       %x{hostid}.to_i(16) % max_java_integer
     end
   end
