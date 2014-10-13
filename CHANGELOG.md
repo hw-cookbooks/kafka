@@ -1,3 +1,7 @@
+## 0.2.4
+
+* gradle support for versions 0.8.1 and higher
+
 ## 0.2.2
 
 * Update download URI

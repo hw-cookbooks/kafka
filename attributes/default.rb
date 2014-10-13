@@ -12,7 +12,6 @@ default[:kafka][:user] = "kafka"
 default[:kafka][:group] = "kafka"
 default[:kafka][:build_commands] = []
 
-default[:kafka][:int_bit_limit] = 32
 default[:kafka][:auto_discovery] = true
 
 default[:kafka][:zk_prefix] = kafka_zk_prefix()

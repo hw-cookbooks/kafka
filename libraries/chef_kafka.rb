@@ -42,6 +42,13 @@ module ChefKafka
       bits[0].to_i == 0 && bits[1].to_i <= 7
     end
 
+    # version 0.8.1 and above uses gradle to build 0.8.0 and lower use sbt
+    # this checks valid version for setting up build_commands
+    def kafka_is_above_081?
+      bits = node[:kafka][:version].split('.')
+      bits[0].to_i == 0 && bits[1].to_i >= 8 && bits[2].to_i > 0
+    end
+
     # Returns the correct ZooKeeper prefix key name based on the desired
     # version of Kafka.
     #
@@ -62,7 +69,8 @@ module ChefKafka
     #
     # @return [Integer] a new broker id
     def new_kafka_broker_id
-      max_java_integer = (2 ** 31) - 1
+      int_bit = kafka_is_below_07? ? 15 : 31
+      max_java_integer = (2 ** int_bit) - 1
       %x{hostid}.to_i(16) % max_java_integer
     end
   end

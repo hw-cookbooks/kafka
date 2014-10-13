@@ -27,8 +27,12 @@ include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 version_dir = "kafka-#{node[:kafka][:version]}"
 base_dir = File.join(node[:kafka][:install_dir], version_dir)
 
-build_commands = ["./sbt update", "./sbt package"]
-build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
+if kafka_is_above_081?
+  build_commands = ["./gradlew jar"]
+else
+  build_commands = ["./sbt update", "./sbt package"]
+  build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
+end
 build_commands << "cp -R . #{base_dir}"
 node.default[:kafka][:build_commands] = build_commands
 
