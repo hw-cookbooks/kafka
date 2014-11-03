@@ -48,6 +48,8 @@ end
 
 directory base_dir do
   recursive true
+  user node[:kafka][:user]
+  group node[:kafka][:group]
 end
 
 directory node[:kafka][:conf_dir] do
