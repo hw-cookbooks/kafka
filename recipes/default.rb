@@ -34,6 +34,7 @@ else
   build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
 end
 build_commands << "cp -R . #{base_dir}"
+build_commands << "chown -R #{node[:kafka][:user]}:#{node[:kafka][:group]} #{base_dir}"
 node.default[:kafka][:build_commands] = build_commands
 
 group node[:kafka][:group]
@@ -48,6 +49,8 @@ end
 
 directory base_dir do
   recursive true
+  user node[:kafka][:user]
+  group node[:kafka][:group]
 end
 
 directory node[:kafka][:conf_dir] do
@@ -71,6 +74,8 @@ end
 
 link "#{node[:kafka][:install_dir]}/kafka" do
   to base_dir
+  owner node[:kafka][:user]
+  group node[:kafka][:group]
 end
 
 runit_service "kafka" do
