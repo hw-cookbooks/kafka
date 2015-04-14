@@ -22,15 +22,21 @@ node.default[:kafka][:config]["#{kafka_zk_prefix}.connectiontimeout.ms"] = 10000
 
 include_recipe "runit"
 include_recipe "java"
+include_recipe "kafka::_gradle" if kafka_is_above_082?
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
 version_dir = "kafka-#{node[:kafka][:version]}"
 base_dir = File.join(node[:kafka][:install_dir], version_dir)
+extracted_path = kafka_suffix_cwd(node[:kafka][:download_url])
+build_commands = []
 
+if kafka_is_above_082?
+  build_commands << "rsync -a #{node[:gradle][:home_dir]}/ #{extracted_path}/gradle/"
+end
 if kafka_is_above_081?
-  build_commands = ["./gradlew jar"]
+  build_commands << ["./gradlew jar"]
 else
-  build_commands = ["./sbt update", "./sbt package"]
+  build_commands << ["./sbt update", "./sbt package"]
   build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
 end
 build_commands << "cp -R . #{base_dir}"
@@ -62,8 +68,6 @@ directory node[:kafka][:log_dir] do
   user node[:kafka][:user]
   group node[:kafka][:group]
 end
-
-extracted_path = kafka_suffix_cwd(node[:kafka][:download_url])
 
 builder_remote version_dir do
   remote_file node[:kafka][:download_url]
