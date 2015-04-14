@@ -36,7 +36,8 @@ end
 if kafka_is_above_081?
   build_commands << "./gradlew jar"
 else
-  build_commands << "./sbt update", "./sbt package"
+  build_commands << "./sbt update"
+  build_commands << "./sbt package"
   build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
 end
 build_commands << "cp -R . #{base_dir}"
