@@ -32,7 +32,7 @@ build_commands = []
 
 if kafka_is_above_082?
   build_commands << "rsync -a #{node[:gradle][:home_dir]}/ gradle/"
-  build_commands << "cd gradle/; ln -s lib wrapper; cd ../"
+  build_commands << "./gradle/bin/gradle"
 end
 if kafka_is_above_081?
   build_commands << "./gradlew jar"
