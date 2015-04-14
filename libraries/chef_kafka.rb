@@ -49,6 +49,12 @@ module ChefKafka
       bits[0].to_i == 0 && bits[1].to_i >= 8 && bits[2].to_i > 0
     end
 
+    # version 0.8.2 and above does not ship gradle
+    def kafka_is_above_082?
+      bits = node[:kafka][:version].split('.')
+      bits[0].to_i == 0 && bits[1].to_i >= 8 && bits[2].to_i >= 2
+    end
+
     # Returns the correct ZooKeeper prefix key name based on the desired
     # version of Kafka.
     #
