@@ -31,7 +31,7 @@ extracted_path = kafka_suffix_cwd(node[:kafka][:download_url])
 build_commands = []
 
 if kafka_is_above_082?
-  build_commands << "rsync -a #{node[:gradle][:home_dir]}/ #{extracted_path}/gradle/"
+  build_commands << "rsync -a #{node[:gradle][:home_dir]}/ gradle/"
 end
 if kafka_is_above_081?
   build_commands << "./gradlew jar"
