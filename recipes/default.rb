@@ -34,9 +34,9 @@ if kafka_is_above_082?
   build_commands << "rsync -a #{node[:gradle][:home_dir]}/ #{extracted_path}/gradle/"
 end
 if kafka_is_above_081?
-  build_commands << ["./gradlew jar"]
+  build_commands << "./gradlew jar"
 else
-  build_commands << ["./sbt update", "./sbt package"]
+  build_commands << "./sbt update", "./sbt package"
   build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
 end
 build_commands << "cp -R . #{base_dir}"
