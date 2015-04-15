@@ -84,23 +84,22 @@ link "#{node[:kafka][:install_dir]}/kafka" do
   group node[:kafka][:group]
 end
 
-runit_service "kafka" do
-  finish true
-end
-
 node.default[:kafka][:config]["log.dir"] = node[:kafka][:log_dir]
 
 if node[:kafka][:config][kafka_broker_key].nil?
   node.default[:kafka][:config][kafka_broker_key] = new_kafka_broker_id
 end
 
-template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
+template File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   source 'kafka.properties.erb'
   mode 0644
-  notifies :restart, 'service[kafka]'
+  notifies :restart, 'service[kafka]', :delayed
+end
+
+runit_service "kafka" do
+  finish true
 end
 
 service 'kafka' do
   action :nothing
-  subscribes :restart, resources("template[#{conf_file}]"), :immediately
 end
