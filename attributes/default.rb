@@ -10,6 +10,7 @@ default[:kafka][:runtime_dir] = "/tmp"
 default[:kafka][:log_dir] = "/var/log/kafka"
 default[:kafka][:user] = "kafka"
 default[:kafka][:group] = "kafka"
+default[:kafka][:shell] = "/bin/false"
 default[:kafka][:build_commands] = []
 
 default[:kafka][:auto_discovery] = true

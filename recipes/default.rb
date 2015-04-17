@@ -52,7 +52,7 @@ user node[:kafka][:user] do
   gid node[:kafka][:group]
   supports :manage_home => true
   home "#{node[:kafka][:install_dir]}/kafka"
-  shell '/bin/false'
+  shell node[:kafka][:shell]
   system true
 end
 
