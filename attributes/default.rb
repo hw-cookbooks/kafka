@@ -20,3 +20,6 @@ default[:gradle][:url] = "https://services.gradle.org/distributions/gradle-2.3-b
 default[:gradle][:version] = "2.3"
 default[:gradle][:home_dir] = "/usr/local/gradle"
 
+default[:kafka][:runit][:env] = {
+  'JMX_PORT' => 9999
+}

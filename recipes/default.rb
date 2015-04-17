@@ -85,6 +85,7 @@ link "#{node[:kafka][:install_dir]}/kafka" do
 end
 
 runit_service "kafka" do
+  env node[:kafka][:runit][:env]
   finish true
 end
 
