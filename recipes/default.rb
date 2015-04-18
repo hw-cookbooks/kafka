@@ -109,7 +109,7 @@ else
   startup_template = nil
 end
 
-if startup_template?
+if !startup_template.nil?
   template File.join(node[:kafka][:install_dir], '/kafka/bin/kafka-run-class.sh') do
     source startup_template
     mode 0755
