@@ -75,9 +75,8 @@ do
 done
 
 # JMX settings
-KAFKA_JMX_OPTS="<%= @jmx_opts %>"
 if [ -z "$KAFKA_JMX_OPTS" ]; then
-  KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false "
+  KAFKA_JMX_OPTS="<%= @jmx_opts %>"
 fi
 
 # JMX port to use
