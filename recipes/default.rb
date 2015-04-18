@@ -95,13 +95,34 @@ if node[:kafka][:config][kafka_broker_key].nil?
   node.default[:kafka][:config][kafka_broker_key] = new_kafka_broker_id
 end
 
-template conf_file = File.join(node[:kafka][:conf_dir], 'kafka.properties') do
+template File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   source 'kafka.properties.erb'
   mode 0644
-  notifies :restart, 'service[kafka]'
+  notifies :restart, 'service[kafka]', :delayed
+end
+
+if kafka_is_above_081?
+  startup_template = "kafka-run-class-8.1.erb"
+elsif kafka_is_above_082?
+  startup_template = "kafka-run-class-8.2.erb"
+else
+  startup_template = nil
+end
+
+if startup_template?
+  template File.join(node[:kafka][:install_dir], '/kafka/bin/kafka-run-class.sh') do
+    source startup_template
+    mode 0755
+    owner node[:kafka][:user]
+    group node[:kafka][:group]
+    vairables ({
+      :jmx_port => node[:kafka][:jmx_port],
+      :jmx_opts => node[:kafka][:jmx_opts]
+    })
+    notifies :restart, 'service[kafka]', :delayed
+  end
 end
 
 service 'kafka' do
   action :nothing
-  subscribes :restart, resources("template[#{conf_file}]"), :immediately
 end
