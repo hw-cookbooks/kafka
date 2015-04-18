@@ -115,7 +115,7 @@ if !startup_template.nil?
     mode 0755
     owner node[:kafka][:user]
     group node[:kafka][:group]
-    vairables ({
+    variables ({
       :jmx_port => node[:kafka][:jmx_port],
       :jmx_opts => node[:kafka][:jmx_opts]
     })
