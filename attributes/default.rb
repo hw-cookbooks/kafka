@@ -10,7 +10,10 @@ default[:kafka][:runtime_dir] = "/tmp"
 default[:kafka][:log_dir] = "/var/log/kafka"
 default[:kafka][:user] = "kafka"
 default[:kafka][:group] = "kafka"
+default[:kafka][:shell] = "/bin/false"
 default[:kafka][:build_commands] = []
+default[:kafka][:jmx_opts] = "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false "
+default[:kafka][:jmx_port] = ""
 
 default[:kafka][:auto_discovery] = true
 
