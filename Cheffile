@@ -4,5 +4,6 @@ site "http://community.opscode.com/api/v1"
 
 cookbook "kafka", path: "."
 cookbook "apt"
+cookbook "ark"
 cookbook "zookeeperd"
 cookbook "yum"
