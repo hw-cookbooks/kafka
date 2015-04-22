@@ -40,6 +40,12 @@ suites:
         version: 0.8.1.1
         config:
           zookeeper.connect: "127.0.0.1:2181"
+  - name: kafka-0.8.2
+    attributes:
+      kafka:
+        version: 0.8.2.1
+        config:
+          zookeeper.connect: "127.0.0.1:2181"
   - name: kafka-0.7
     attributes:
       kafka:
