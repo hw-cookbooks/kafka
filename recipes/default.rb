@@ -50,11 +50,15 @@ node.default[:kafka][:build_commands] = build_commands
 
 group node[:kafka][:group]
 
+directory node[:kafka][:install_dir] do
+  recursive true
+end
+
 user node[:kafka][:user] do
   comment 'Kafka user'
   gid node[:kafka][:group]
   supports :manage_home => true
-  home "#{node[:kafka][:install_dir]}/kafka"
+  home "#{node[:kafka][:install_dir]}"
   shell node[:kafka][:shell]
   system true
 end
