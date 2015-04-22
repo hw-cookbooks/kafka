@@ -22,7 +22,7 @@ node.default[:kafka][:config]["#{kafka_zk_prefix}.connectiontimeout.ms"] = 10000
 
 include_recipe "runit"
 include_recipe "java"
-include_recipe "kafka::_gradle" if kafka_is_above_082?
+include_recipe "kafka::_gradle" if kafka_is_082?
 include_recipe "kafka::discovery" if node[:kafka][:auto_discovery]
 
 version_dir = "kafka-#{node[:kafka][:version]}"
@@ -30,28 +30,35 @@ base_dir = File.join(node[:kafka][:install_dir], version_dir)
 extracted_path = kafka_suffix_cwd(node[:kafka][:download_url])
 build_commands = []
 
-if kafka_is_above_082?
+if kafka_is_082?
   build_commands << "rsync -a #{node[:gradle][:home_dir]}/ gradle/"
   build_commands << "./gradle/bin/gradle"
-end
-if kafka_is_above_081?
   build_commands << "./gradlew jar"
-else
+elsif kafka_is_081?
+  build_commands << "./gradlew jar"
+elsif kafka_is_07?
   build_commands << "./sbt update"
   build_commands << "./sbt package"
   build_commands << "./sbt assembly-package-dependency" unless kafka_is_below_07?
+else
+  Chef::Log.warn("You may not have a supported kafka version to install.")
 end
+
 build_commands << "cp -R . #{base_dir}"
 build_commands << "chown -R #{node[:kafka][:user]}:#{node[:kafka][:group]} #{base_dir}"
 node.default[:kafka][:build_commands] = build_commands
 
 group node[:kafka][:group]
 
+directory node[:kafka][:install_dir] do
+  recursive true
+end
+
 user node[:kafka][:user] do
   comment 'Kafka user'
   gid node[:kafka][:group]
   supports :manage_home => true
-  home "#{node[:kafka][:install_dir]}/kafka"
+  home node[:kafka][:install_dir]
   shell node[:kafka][:shell]
   system true
 end
@@ -101,9 +108,9 @@ template File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   notifies :restart, 'service[kafka]', :delayed
 end
 
-if kafka_is_above_081?
+if kafka_is_081?
   startup_template = "kafka-run-class-8.1.erb"
-elsif kafka_is_above_082?
+elsif kafka_is_082?
   startup_template = "kafka-run-class-8.2.erb"
 else
   startup_template = nil
