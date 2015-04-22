@@ -105,7 +105,8 @@ end
 template File.join(node[:kafka][:conf_dir], 'kafka.properties') do
   source 'kafka.properties.erb'
   mode 0644
-  notifies :restart, 'service[kafka]', :delayed
+  notifies :stop, 'service[kafka]', :delayed
+  notifies :start, 'service[kafka]', :delayed
 end
 
 if kafka_is_081?
@@ -126,7 +127,8 @@ if !startup_template.nil?
       :jmx_port => node[:kafka][:jmx_port],
       :jmx_opts => node[:kafka][:jmx_opts]
     })
-    notifies :restart, 'service[kafka]', :delayed
+    notifies :stop, 'service[kafka]', :delayed
+    notifies :start, 'service[kafka]', :delayed
   end
 end
 
