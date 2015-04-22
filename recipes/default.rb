@@ -58,7 +58,7 @@ user node[:kafka][:user] do
   comment 'Kafka user'
   gid node[:kafka][:group]
   supports :manage_home => true
-  home "#{node[:kafka][:install_dir]}"
+  home node[:kafka][:install_dir]
   shell node[:kafka][:shell]
   system true
 end
