@@ -2,7 +2,7 @@
 # Cookbook Name:: kafka
 # Recipe:: discovery
 #
-# Copyright 2011, Heavy Water Ops, LLC
+# Copyright 2011, Heavy Water Operations, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,4 +26,3 @@ node.set[:kafka][:config]["#{zk_prefix}.connect"] = node[:zookeeperd][:config].m
   next unless k.start_with?("server.")
   [v.split(":").first, '2181'].join(':')
 end.compact.join(',')
-
