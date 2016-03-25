@@ -109,22 +109,37 @@ template File.join(node[:kafka][:conf_dir], 'kafka.properties') do
 end
 
 if kafka_is_081?
-  startup_template = "kafka-run-class-8.1.erb"
+  run_class_template = "kafka-run-class-8.1.erb"
+  server_start_template = "kafka-server-start-8.1.erb"
 elsif kafka_is_082?
-  startup_template = "kafka-run-class-8.2.erb"
+  run_class_template = "kafka-run-class-8.2.erb"
+  server_start_template = "kafka-server-start-8.2.erb"
 else
-  startup_template = nil
+  run_class_template = nil
+  server_start_template = nil
 end
 
-if !startup_template.nil?
+if !run_class_template.nil?
   template File.join(node[:kafka][:install_dir], '/kafka/bin/kafka-run-class.sh') do
-    source startup_template
+    source run_class_template
     mode 0755
     owner node[:kafka][:user]
     group node[:kafka][:group]
     variables ({
-      :jmx_port => node[:kafka][:jmx_port],
       :jmx_opts => node[:kafka][:jmx_opts]
+    })
+    notifies :restart, 'service[kafka]', :delayed
+  end
+end
+
+if !server_start_template.nil? && node[:kafka][:jmx_port]
+  template File.join(node[:kafka][:install_dir], '/kafka/bin/kafka-server-start.sh') do
+    source server_start_template
+    mode 0755
+    owner node[:kafka][:user]
+    group node[:kafka][:group]
+    variables ({
+      :jmx_port => node[:kafka][:jmx_port]
     })
     notifies :restart, 'service[kafka]', :delayed
   end
