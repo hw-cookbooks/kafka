@@ -1,3 +1,11 @@
+## 0.2.8
+
+* configure jmx_port option in kafka-server-start
+* remove Vagabondfile and Vagrantfile as test-kitchen provides support
+* Code of Conduct
+* Contributing Doc
+* new platforms for test-kitchen
+
 ## 0.2.6
 
 * Correct permissions on install directory and files

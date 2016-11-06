@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: kafka
-# Recipe:: discovery
+# Recipe:: _gradle
 #
-# Copyright 2011, Heavy Water Operations, LLC
+# Copyright 2015, Heavy Water Ops, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+::Chef::Recipe.send(:include, ChefKafka::Helpers)
 
-include_recipe "zookeeperd::discovery"
+include_recipe "ark"
 
-zk_prefix = node[:kafka][:zk_prefix]
-
-node.set[:kafka][:config]['enable.zookeeper'] = true
-node.set[:kafka][:config]["#{zk_prefix}.connect"] = node[:zookeeperd][:config].map do |k,v|
-  next unless k.start_with?("server.")
-  [v.split(":").first, '2181'].join(':')
-end.compact.join(',')
+ark "gradle" do
+  url node[:gradle][:url]
+  home_dir node[:gradle][:home_dir]
+  version node[:gradle][:version]
+  append_env_path true
+  action :install
+end

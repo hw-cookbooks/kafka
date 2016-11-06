@@ -1,8 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-site "http://community.opscode.com/api/v1"
+site "http://supermarket.chef.io/api/v1"
 
 cookbook "kafka", path: "."
 cookbook "apt"
+cookbook "ark"
 cookbook "zookeeperd"
 cookbook "yum"
