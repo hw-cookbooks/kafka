@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: kafka
+# Cookbook:: kafka
 # Attributes:: config
 #
-# Copyright 2014, Heavy Water Operations, LLC
+# Copyright:: 2014, Heavy Water Operations, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 #
 
 # ensure node.kafka.version is loaded
-include_attribute "kafka::default"
+include_attribute 'kafka::default'
 
 default[:kafka][:config] = Mash[
-  'hostname', node[:fqdn],
+  'hostname', node['fqdn'],
   'port', 9092,
   'num.threads', 8,
   'socket.send.buffer', 1048576,
@@ -29,7 +29,7 @@ default[:kafka][:config] = Mash[
   'max.socket.request.bytes', 104857600,
   'num.partitions', 1,
   'log.flush.interval', 10000,
-  'log.default.flush.interval.ms',1000,
+  'log.default.flush.interval.ms', 1000,
   'log.default.flush.scheduler.interval.ms', 1000,
   'log.retention.hours', 168,
   'log.file.size', 536870912,

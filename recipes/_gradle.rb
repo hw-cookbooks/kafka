@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: kafka
+# Cookbook:: kafka
 # Recipe:: _gradle
 #
-# Copyright 2015, Heavy Water Ops, LLC
+# Copyright:: 2015, Heavy Water Ops, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-::Chef::Recipe.send(:include, ChefKafka::Helpers)
+::Chef::DSL::Recipe.include ChefKafka::Helpers
 
-include_recipe "ark"
+include_recipe 'ark'
 
-ark "gradle" do
-  url node[:gradle][:url]
-  home_dir node[:gradle][:home_dir]
-  version node[:gradle][:version]
+ark 'gradle' do
+  url node['gradle']['url']
+  home_dir node['gradle']['home_dir']
+  version node['gradle']['version']
   append_env_path true
   action :install
 end

@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 group :release do
   gem 'emeril'
@@ -7,6 +7,6 @@ end
 
 group :integration do
   gem 'librarian-chef'
-  gem "test-kitchen"
-  gem "kitchen-vagrant"
+  gem 'test-kitchen'
+  gem 'kitchen-vagrant'
 end
