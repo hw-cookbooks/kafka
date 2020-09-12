@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: kafka
+# Cookbook:: kafka
 # Recipe:: discovery
 #
-# Copyright 2011, Heavy Water Operations, LLC
+# Copyright:: 2011, Heavy Water Operations, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-include_recipe "zookeeperd::discovery"
+include_recipe 'zookeeperd::discovery'
 
-zk_prefix = node[:kafka][:zk_prefix]
+zk_prefix = node['kafka']['zk_prefix']
 
-node.set[:kafka][:config]['enable.zookeeper'] = true
-node.set[:kafka][:config]["#{zk_prefix}.connect"] = node[:zookeeperd][:config].map do |k,v|
-  next unless k.start_with?("server.")
-  [v.split(":").first, '2181'].join(':')
+node.normal['kafka']['config']['enable.zookeeper'] = true
+node.normal['kafka']['config']["#{zk_prefix}.connect"] = node['zookeeperd']['config'].map do |k, v|
+  next unless k.start_with?('server.')
+  [v.split(':').first, '2181'].join(':')
 end.compact.join(',')

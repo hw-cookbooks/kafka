@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: kafka
+# Cookbook:: kafka
 # Recipe:: zookeeper
 #
-# Copyright 2014, Heavy Water Operations, LLC
+# Copyright:: 2014, Heavy Water Operations, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +17,4 @@
 # limitations under the License.
 #
 
-include_recipe "zookeeperd::server"
+include_recipe 'zookeeperd::server'
