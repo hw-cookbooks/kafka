@@ -1,5 +1,4 @@
 require 'serverspec'
-require 'thread'
 require 'timeout'
 
 include Serverspec::Helper::Exec
