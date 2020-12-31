@@ -41,4 +41,3 @@ default[:kafka][:zk_prefix] = kafka_zk_prefix()
 default[:gradle][:url] = 'https://services.gradle.org/distributions/gradle-2.3-bin.zip'
 default[:gradle][:version] = '2.3'
 default[:gradle][:home_dir] = '/usr/local/gradle'
-
